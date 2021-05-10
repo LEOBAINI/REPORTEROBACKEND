@@ -13,16 +13,17 @@ public class Conexion {
         private  Connection c;
         protected  Statement statemente;
         protected  ResultSet resulsete;
-        public static String user=null;
-        public static String pass=null;
-        private static String cadena=null;
-        private static String driver="com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    
-     
-    
-        
+        private static String user="root";
+        private static String pass="root";
+        private static String host="localhost";
+        private static String base="reportero";
+        private static String cadena="jdbc:mysql://"+host+"/"+base;
         
        
+        private static String driver="com.mysql.cj.jdbc.Driver";
+        //Para sql server -> com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    
+           
     
         
         public static String getUser() {
@@ -55,15 +56,17 @@ public class Conexion {
          
          
         
-        public boolean conectar(String server,String database,String usuario,String password){
+        public boolean conectar(){
+        	//String server,String database,String usuario,String password
         	boolean conecto;
         	try{
-        		
+        		//Connection conexion = DriverManager.getConnection ("jdbc:mysql://localhost/prueba","root", "la_clave");
             	
-            	cadena="jdbc:sqlserver://"+server+";user="+usuario+";password="+password+";database="+database+"";
+            //	cadena="jdbc:mysql://localhost/prueba","root", "la_clave";
+            	//"jdbc:sqlserver://"+server+";user="+usuario+";password="+password+";database="+database+"";
             	
                 Class.forName(driver);
-                c=DriverManager.getConnection(cadena);
+                c=DriverManager.getConnection(cadena,getUser(),getPass());
                 statemente=c.createStatement();       
                  
                 conecto=true;
@@ -100,7 +103,7 @@ public class Conexion {
                          
                          
                          
-                    //  System.out.println("Conexión liberada OK");
+                    //  System.out.println("Conexiï¿½n liberada OK");
                     }
                     else{
                         System.out.println("Ya estaba desconectado");
@@ -125,5 +128,12 @@ public class Conexion {
 
 		public Connection getC() {
 			return c;
+		}
+
+
+
+		public static String getServer() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 }

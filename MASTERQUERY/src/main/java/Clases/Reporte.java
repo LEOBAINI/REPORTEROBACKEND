@@ -7,10 +7,10 @@ import java.io.IOException;
 public class Reporte {
 	String usuarioSql;
 	String nombre;
-	String query;
+	private String query;
 	long windowsProcessId;
 	String horaEjecucion;
-	boolean estaEnEjecucion;	
+	String estaEnEjecucion;	
 	String ip;
 	String passwordSql;
 	String rutaSalida;
@@ -37,27 +37,19 @@ public class Reporte {
 			   Process proceso = null;
 			try {
 				proceso = Runtime.getRuntime().exec(comando);
-				try {
-					setWindowsProcessId(proceso.pid());
-					setEstaEnEjecucion(true);
-					proceso.waitFor();
-					setEstaEnEjecucion(false);
-					System.out.println(proceso.exitValue());	
-					System.out.println(getRutaAlArchivoGenerado());					
-					Utilidades.comprimir(getRutaAlArchivoGenerado());
-					Utilidades.avisarArchivoListo();
-					
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				
-			} catch (IOException e1) {
+				proceso.waitFor();
+				//System.out.println(proceso.pid());
+				System.out.println(proceso.exitValue());	
+				System.out.println(getRutaAlArchivoGenerado());					
+				Utilidades.comprimir(getRutaAlArchivoGenerado());
+				Utilidades.avisarArchivoListo();
+				
+			} catch (IOException | InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			   System.out.println(proceso.pid());
+			  
 			   try {
 				proceso.waitFor();
 				System.out.println("Finalizado");
@@ -98,14 +90,12 @@ public class Reporte {
 	public String getHoraEjecucion() {
 		return horaEjecucion;
 	}
-	public void setHoraEjecucion(String horaEjecucion) {
+	public void setFechaHoraEjecucion(String horaEjecucion) {
 		this.horaEjecucion = horaEjecucion;
 	}
-	public boolean isEstaEnEjecucion() {
-		return estaEnEjecucion;
-	}
-	public void setEstaEnEjecucion(boolean estaEnEjecucion) {
-		this.estaEnEjecucion = estaEnEjecucion;
+	
+	public void setEstaEnEjecucion(String string) {
+		this.estaEnEjecucion = string;
 	}
 	public String getIp() {
 		return ip;

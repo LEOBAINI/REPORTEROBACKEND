@@ -19,6 +19,10 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.protocol.Resultset;
+
+import Clases.Reporte;
+
 
 
  
@@ -30,10 +34,10 @@ public class MetodosSql extends Conexion {
 	String password;
 
      
-    public MetodosSql(String server,String usuario,String password) {
-    	this.server=server;
-    	this.usuario=usuario;
-    	this.password=password;
+    public MetodosSql() {
+    	this.server=Conexion.getServer();
+    	this.usuario=Conexion.getUser();
+    	this.password=Conexion.getPass();
     }
      
    
@@ -65,7 +69,7 @@ public class MetodosSql extends Conexion {
         Conexion con = new Conexion();
  
         try {
-            con.conectar(this.server,this.database,this.usuario,this.password);
+            con.conectar();
             con.statemente.execute(sentenciaSql);
  
             con.desconectar();
@@ -89,7 +93,7 @@ public class MetodosSql extends Conexion {
         Conexion con = new Conexion();
  
         try {
-            con.conectar(this.server,this.database,this.usuario,this.password);
+            con.conectar();
             con.statemente.executeUpdate(sentenciaSql);
  
             con.desconectar();
@@ -107,85 +111,58 @@ public class MetodosSql extends Conexion {
  
     }
  
-    public ArrayList<ArrayList<String>> consultar(String SentenciaSql) {
+    
+    public ArrayList<Reporte> listarReportesSinProcesarDeLaBase() {
+    	try {
+    	String SentenciaSql="select * from colareportes where fechafinalizado is null";
         ResultSet res =null;
-        ArrayList<ArrayList<String>> matriz = new ArrayList<ArrayList<String>>();//creo una matriz
-        String aux=null;
+        ArrayList<Reporte> reportes = new ArrayList<Reporte>();//
+        
+        Reporte reporte;
          
-        Conexion con = new Conexion();
-         
-         
-        try {
-            con.conectar(this.server,this.database,this.usuario,this.password);
+        Conexion con = new Conexion();        
+     
+            con.conectar();
             con.resulsete=con.statemente.executeQuery(SentenciaSql);
             res = con.resulsete;
-            ResultSetMetaData rmd = res.getMetaData(); //guardo los datos referentes al resultset
-             
+                  
               
-                while ( res.next()){
-                        ArrayList<String> columnas = new ArrayList<String>();
-                         for (int i=1; i<=rmd.getColumnCount(); i++) {
-                             aux=res.getString(i);            
-                                  
-                             columnas.add(aux);
-                         }
-                         matriz.add(columnas);
-                }
-            con.desconectar();
- 
-             
- 
-        } catch (Exception e) {
-            System.out.println("Error en metodosSql.consultar"+e.getMessage());
-            System.out.println(e.getLocalizedMessage());
-          
-             
-        }
- 
-        return matriz;
-         
- 
-    }
-     
-         
-         
-     
-    public String ejecutarBackup(String SentenciaSql) {
+					while ( res.next()){
+											
+						reporte=new Reporte();
+						reporte.setDatabase(res.getString("Database"));
+						reporte.setUsuarioSql(res.getString("usuarioSql"));
+						reporte.setNombre(res.getString("nombre"));
+						reporte.setWindowsProcessId(Long.parseLong(res.getString("windowsProcessId")));
+						reporte.setFechaHoraEjecucion(res.getString("FechaHoraEjecucion"));
+						reporte.setEstaEnEjecucion(res.getString("EstaEnEjecucion"));
+						reporte.setIp(res.getString("ip"));
+						reporte.setPasswordSql(res.getString("passwordSql"));
+						reporte.setRutaSalida(res.getString("rutasalida"));
+						reporte.setRutaAlQuery(res.getString("RutaAlQuery"));
+						
+						
+						reportes.add(reporte);
+						System.out.println(reporte.getRutaAlQuery());
+					}               
+					con.desconectar();
        
-         
-        Conexion con = new Conexion();
-      
-         
-        try {
-            con.conectar(this.server,this.database,this.usuario,this.password);
-            if(con.getC()!= null) {
-            con.statemente.executeQuery(SentenciaSql);
-            System.out.println("Ejecutando "+SentenciaSql);
-                       
-            con.desconectar();
- 
-            }else {
-            System.out.println("Problema de conexión");	
-            return "Problema de conexion con la base";
-            }
- 
-        } catch (Exception e) {
-        	 System.out.println(e.getMessage());
-            return (e.getMessage());
-                      
-        }
- 
-        return "ok";
+		return reportes;
+        
+    	}catch(Exception e) {
+    		System.out.println(e.getMessage());
+    	}
+		return null;
+    	
          
  
     }
+    
    
-    public String getDatabase() {
-		return database;
-	}
-
-
-
+ 
+    
+     
+         
 
 	public void setDatabase(String database) {
 		this.database = database;
@@ -203,7 +180,7 @@ public class MetodosSql extends Conexion {
     //    System.out.println("Mostrando Query --->"+SentenciaSql+"<---");
          
         try {
-            con.conectar(this.server,this.database,this.usuario,this.password);
+            con.conectar();
             if(con!= null) {
             con.resulsete=con.statemente.executeQuery(SentenciaSql);
             res = con.resulsete;
@@ -242,7 +219,7 @@ public class MetodosSql extends Conexion {
         Conexion con = new Conexion();
         DefaultTableModel modelo=new DefaultTableModel();//voy a modelar mi jtable
         JTable tablaDatos=new JTable(modelo);
-        if(con.conectar(this.server,this.database,this.usuario,this.password)==true){
+        if(con.conectar()==true){
         //TableColumnModel modeloColumnas = null;
         java.sql.ResultSetMetaData metadatos;
          
@@ -276,21 +253,21 @@ public class MetodosSql extends Conexion {
           while(con.resulsete.next()){
             // Bucle para cada resultado en la consulta
               
-                 // Se crea un array que será una de las filas de la tabla. 
+                 // Se crea un array que serï¿½ una de las filas de la tabla. 
                  Object [] fila = new Object[cantColumnas]; // Hay columnas en la tabla
  
-                 // Se rellena cada posición del array con una de las columnas de la tabla en base de datos.
+                 // Se rellena cada posiciï¿½n del array con una de las columnas de la tabla en base de datos.
                  for (int i=0;i<cantColumnas;i++)
                     fila[i] = con.resulsete.getObject(i+1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
  
-                 // Se añade al modelo la fila completa.
+                 // Se aï¿½ade al modelo la fila completa.
                  modelo.addRow(fila);
                 
                  //cell.setBackground(Color.RED);
               }
           labelInfo.setText("Entregando Datos.");
           Thread.sleep(1500);
-          labelInfo.setText("Última conexión "+hora + ":" + minutos + ":" + segundo);
+          labelInfo.setText("ï¿½ltima conexiï¿½n "+hora + ":" + minutos + ":" + segundo);
           Thread.sleep(1500);
          
         } 
@@ -324,7 +301,7 @@ public class MetodosSql extends Conexion {
           // Leer el archivo linea por linea
           try {
 			while ((strLinea = buffer.readLine()) != null)   {
-			      // Imprimimos la línea por pantalla
+			      // Imprimimos la lï¿½nea por pantalla
 				  if(resultado==null){
 			    	  resultado=strLinea;
 			         }else{
@@ -366,7 +343,7 @@ public class MetodosSql extends Conexion {
         // Leer el archivo linea por linea
         try {
 			while ((strLinea = buffer.readLine()) != null)   {
-			      // Imprimimos la línea por pantalla
+			      // Imprimimos la lï¿½nea por pantalla
 				  if(resultado==null){
 			    	  resultado=strLinea;
 			         }else{
@@ -429,6 +406,8 @@ public class MetodosSql extends Conexion {
     	}
 		
  	}
+    
+    
  
      
    
