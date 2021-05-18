@@ -5,6 +5,7 @@ import java.io.IOException;
 
 
 public class Reporte {
+	String idcolaReportes;
 	String usuarioSql;
 	String nombre;
 	private String query;
@@ -43,7 +44,7 @@ public class Reporte {
 				System.out.println(proceso.exitValue());	
 				System.out.println(getRutaAlArchivoGenerado());					
 				Utilidades.comprimir(getRutaAlArchivoGenerado());
-				Utilidades.avisarArchivoListo();
+				Utilidades.avisarArchivoListo(this);
 				
 			} catch (IOException | InterruptedException e1) {
 				// TODO Auto-generated catch block
@@ -141,6 +142,14 @@ public class Reporte {
 
 	public void setRutaAlArchivoGenerado(String rutaAlArchivoGenerado) {
 		this.rutaAlArchivoGenerado = rutaAlArchivoGenerado;
+	}
+
+	public String getIdcolaReportes() {
+		return idcolaReportes;
+	}
+
+	public void setIdcolaReportes(String string) {
+		this.idcolaReportes = string;
 	}
 	
 

@@ -13,8 +13,8 @@ public class Conexion {
         private  Connection c;
         protected  Statement statemente;
         protected  ResultSet resulsete;
-        private static String user="root";
-        private static String pass="root";
+        private static String user="admin";
+        private static String pass="admin";
         private static String host="localhost";
         private static String base="reportero";
         private static String cadena="jdbc:mysql://"+host+"/"+base;

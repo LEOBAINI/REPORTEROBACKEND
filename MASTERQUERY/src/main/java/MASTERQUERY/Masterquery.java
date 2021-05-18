@@ -1,15 +1,8 @@
 package MASTERQUERY;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
-
-import Clases.Reporte;
 import Clases.ReporteManager;
 import Clases.ServidorSocket;
-import MetodosSql.MetodosSql;
 
 public class Masterquery {
 	
@@ -33,16 +26,9 @@ public class Masterquery {
         if(hilo.isAlive()) {
         	//Si logró abrir el puerto de escucha, iniciar aplicativo.
         	 System.out.println("Programa en ejecucion, comenzando tareas de generacion de reportes");
-        	
+        	       	 
+        	 procesarReportesEncolados();
         	 
-
-        //	 while(ReporteManager.hayReportesSinEncolar())//si da true sigue
-       // 	 {
-        	 ReporteManager.encolarReportesAprocesar();
-        	 ReporteManager.correrReportes();
-        	 ReporteManager.borrarColaReportesAntiguos();
-        	 System.out.println("Trabajando");
-        //	 }
         	 System.out.println("No hay mas reportes, saliendo...");
         	 System.exit(0);
         	 
@@ -54,6 +40,19 @@ public class Masterquery {
      
 		
 		
+	}
+	
+	public static void procesarReportesEncolados(){
+		System.out.println("Encolando reportes en memoria para procesar");
+		 ReporteManager.encolarReportesAprocesar();
+		 System.out.println("Ejecutando reportes encolados");
+    	 ReporteManager.correrReportes();
+    	 System.out.println("Borrando reportes viejos");
+    	 ReporteManager.borrarColaReportesAntiguos();
+    	 
+    	 if(ReporteManager.hayReportesSinEncolar()) {
+    		 procesarReportesEncolados();
+    	 }
 	}
 
 	

@@ -51,6 +51,7 @@ public class Utilidades {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 		// delete the last new line separator
 		stringBuilder.deleteCharAt(stringBuilder.length() - 1);
@@ -83,6 +84,7 @@ public class Utilidades {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 		// delete the last new line separator
 		stringBuilder.deleteCharAt(stringBuilder.length() - 1);
@@ -136,8 +138,11 @@ public class Utilidades {
 		}
 		
 	}
-	public static void avisarArchivoListo() {
-		System.out.println("El archivo está listo, enviar mail...");
+	public static void avisarArchivoListo(Reporte reporte) {
+		MetodosSql metodos=new MetodosSql();
+		String query="update colareportes set fechafinalizado=now() where idcolareportes=ID_COLA_REPORTES";
+		query=query.replaceAll("ID_COLA_REPORTES", reporte.getIdcolaReportes());
+		metodos.insertarOmodif2(query);
 		
 	}
 	

@@ -130,7 +130,8 @@ public class MetodosSql extends Conexion {
 					while ( res.next()){
 											
 						reporte=new Reporte();
-						reporte.setDatabase(res.getString("Database"));
+						reporte.setIdcolaReportes(res.getString("idcolaReportes"));
+						reporte.setDatabase(res.getString("baseData"));
 						reporte.setUsuarioSql(res.getString("usuarioSql"));
 						reporte.setNombre(res.getString("nombre"));
 						reporte.setWindowsProcessId(Long.parseLong(res.getString("windowsProcessId")));
