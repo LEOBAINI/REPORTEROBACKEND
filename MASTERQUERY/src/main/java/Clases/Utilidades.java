@@ -93,6 +93,7 @@ public class Utilidades {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 		String content = stringBuilder.toString();
@@ -104,7 +105,7 @@ public class Utilidades {
 	}
 	public static String getComando(Reporte repo) {
 		String comando;
-		comando="sqlcmd -S "+repo.getIp()+"  -d "+ repo.getDatabase() +" -U "+repo.getUsuarioSql()+" -P  "+repo.getPasswordSql()+" -Q "+repo.getQuery()+"   -s \",\" -W -o "+repo.getRutaSalida()+"\\"+repo.getNombre()+"_"+MetodosSql.dameFechaDeHoy()+repo.getExtension();
+		comando="sqlcmd -S "+repo.getIp()+"  -d "+ repo.getDatabase() +" -U "+repo.getUsuarioSql()+" -P  "+repo.getPasswordSql()+" -i "+repo.getRutaAlQuery()+"   -s \",\" -W -o "+repo.getRutaSalida()+"\\"+repo.getNombre()+"_"+MetodosSql.dameFechaDeHoy()+repo.getExtension();
 		repo.setRutaAlArchivoGenerado(repo.getRutaSalida()+"\\"+repo.getNombre()+"_"+MetodosSql.dameFechaDeHoy()+repo.getExtension());
 		return comando;
 	}

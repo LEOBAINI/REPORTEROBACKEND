@@ -25,22 +25,14 @@ public class Reporte {
 	}	
 	
 	public void ejecutar() {
-		File rutaQuery=new File(rutaAlQuery);
-		this.query=Utilidades.leerArchivoSinSaltosDeLinea(rutaQuery);	
-		this.query=Utilidades.formatearQuery(this.query);
-		if(query.contains("--")) {
-				   System.out.println("Error, quite los comentarios de linea, y ponga entre barra y asterisco");
-				   return;
-			   }
-			   
+					   
 			   String comando=Utilidades.getComando(this);
 			   System.out.println("Comando a ejecutar  "+comando);
 			   Process proceso = null;
 			try {
-				proceso = Runtime.getRuntime().exec(comando);
-				
+				proceso = Runtime.getRuntime().exec(comando);				
 				proceso.waitFor();
-				//System.out.println(proceso.pid());
+				
 				System.out.println(proceso.exitValue());	
 				System.out.println(getRutaAlArchivoGenerado());					
 				Utilidades.comprimir(getRutaAlArchivoGenerado());
@@ -49,6 +41,9 @@ public class Reporte {
 			} catch (IOException | InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				System.out.println(e1.getMessage());
+				
+				System.exit(1);
 			}
 			  
 			   try {
@@ -57,6 +52,8 @@ public class Reporte {
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.out.println(e.getMessage());
+				System.exit(1);
 			}
 			  
 		

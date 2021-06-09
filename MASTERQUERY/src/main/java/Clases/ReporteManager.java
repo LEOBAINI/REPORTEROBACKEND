@@ -13,9 +13,14 @@ public class ReporteManager {
 	 static MetodosSql metodos=new MetodosSql();
 	
 	public static void correrReportes() {
+		try {
 		for(int i=0;i<reportes.size();i++) {
 			System.out.println("Comenzando a ejecutar reporte");
 			reportes.get(i).ejecutar();
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
 		
 	}
@@ -26,18 +31,13 @@ public class ReporteManager {
 	
 	public static void encolarReportesAprocesar()  {
 			
-			/*		
-			Reporte reporte=new Reporte();
-			reporte.setDatabase("monitordb");
-			reporte.setIp("10.54.118.60");
-			reporte.setNombre("ElReporteCrazy");
-			reporte.setUsuarioSql("sa");
-			reporte.setPasswordSql("anaconda1");
-			reporte.setRutaAlQuery("C:\\QueryInputs\\Detalle1.sql");
-			reporte.setRutaSalida("C:\\xampp\\htdocs\\REPORTERO\\Descargas");
-			*/
-			
+			try {			
 			reportes=metodos.listarReportesSinProcesarDeLaBase();
+			}catch(Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+				
+			}
 		
 	}
 	/**
